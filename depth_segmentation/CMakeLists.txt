@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 2.8.3)
-project(depth_segmentation)
+cmake_minimum_required(VERSION 3.0)
+
+project(depth_segmentation VERSION 0.0.1 LANGUAGES CXX)
 
 add_definitions(-std=c++14)
 
@@ -61,15 +62,17 @@ endif()
 cs_add_library(${PROJECT_NAME}
   src/depth_segmentation.cpp
 )
-target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS})
+target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS} ${OpenCV_LIBS})
 target_compile_options(${PROJECT_NAME} PRIVATE ${OpenMP_FLAGS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
 
 
 # add_definitions(-DWRITE_IMAGES)
 cs_add_executable(${PROJECT_NAME}_node
   src/depth_segmentation_node.cpp
 )
-target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME} ${PCL_IO_LIBRARIES} ${OpenCV_LIBS})
+target_include_directories(${PROJECT_NAME}_node PRIVATE ${PCL_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
 # COPY TEST DATA
 # TODO(ff): We should move the test data to an external repo or a cloud at some point.
